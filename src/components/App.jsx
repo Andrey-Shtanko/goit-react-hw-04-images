@@ -2,6 +2,10 @@ import { Component } from 'react';
 import { Container } from './App.styled';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Loader } from './Loader/Loader';
+import { Button } from './Button/Button';
+
+
 
 export class App extends Component {
   state = {
@@ -32,10 +36,11 @@ export class App extends Component {
     return (
       <Container>
         <Searchbar onSubmit={this.onSubmit} />
-        {this.state.isLoading && <div>Loading...</div>}
+        {this.state.isLoading && <Loader/>}
         {this.state.images.length > 1 && (
           <ImageGallery images={this.state.images} />
         )}
+        {this.state.images.length > 1 && <Button />}
       </Container>
     );
   }
