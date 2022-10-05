@@ -1,11 +1,14 @@
-import { Overlay, Modal, ModalImg } from './Modal.styled';
+import { Modal } from '@mui/material';
+import { Overlay, ModalImg, ModalBox } from './Modal.styled';
 
-export const ModalWindow = () => {
+export const ModalWindow = ({ onHandleClose, url, tags }) => {
   return (
-    <Overlay>
-      <Modal>
-        <ModalImg src="" alt="" />
-      </Modal>
-    </Overlay>
+    <Modal open={true} onClose={onHandleClose}>
+      <Overlay onClick={onHandleClose}>
+        <ModalBox>
+          <ModalImg src={url} alt={tags} />
+        </ModalBox>
+      </Overlay>
+    </Modal>
   );
 };

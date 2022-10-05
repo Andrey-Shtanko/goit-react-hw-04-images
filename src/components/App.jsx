@@ -5,8 +5,8 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
 import { Button } from './Button/Button';
 
-import { Modal } from '@mui/material';
-// import { ModalWindow } from './Modal/Modal';
+// import { Modal } from '@mui/material';
+import { ModalWindow } from './Modal/Modal';
 import { ModalBox, Overlay, ModalImg } from './Modal/Modal.styled';
 
 export class App extends Component {
@@ -22,27 +22,34 @@ export class App extends Component {
   };
 
   async componentDidUpdate(prevProps, prevState) {
-    if (this.state.page !== 1) {
-      try {
-        this.setState({ isLoading: true });
-        const { hits } = await fetch(
-          `https://pixabay.com/api/?key=29357448-0203ad34ff6f16514b0291a92&q=${this.state.query}&image_type=photo&orientation=horizontal&safesearch=true&per_page=12&page=${this.state.page}`
-        ).then(response => response.json());
-        this.setState(({ images }) => ({ images: [...images, ...hits] }));
-      } catch (error) {
-        console.log(error);
-      } finally {
-        this.setState({ isLoading: false });
-      }
-    }
     if (prevState.query !== this.state.query) {
+      this.setState({ images: [] });
       try {
         this.setState({ isLoading: true });
         const { hits } = await fetch(
           `https://pixabay.com/api/?key=29357448-0203ad34ff6f16514b0291a92&q=${this.state.query}&image_type=photo&orientation=horizontal&safesearch=true&per_page=12&page=1`
         ).then(response => response.json());
+
         this.setState({ images: hits });
-        this.setState({ page: 1 });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.setState({ isLoading: false });
+      }
+      return;
+    }
+    if (
+      prevState.query === this.state.query &&
+      prevState.page !== this.state.page
+    ) {
+      try {
+        this.setState({ isLoading: true });
+        const { hits } = await fetch(
+          `https://pixabay.com/api/?key=29357448-0203ad34ff6f16514b0291a92&q=${this.state.query}&image_type=photo&orientation=horizontal&safesearch=true&per_page=12&page=${this.state.page}`
+        ).then(response => response.json());
+        this.setState(prevState => ({
+          images: [...prevState.images, ...hits],
+        }));
       } catch (error) {
         console.log(error);
       } finally {
@@ -52,6 +59,8 @@ export class App extends Component {
   }
   onSubmit = query => {
     this.setState({ query });
+
+    this.setState({ page: 1 });
   };
   onImageClick = (url, tags) => {
     this.setState({ largeImage: { url, tags } });
@@ -78,16 +87,11 @@ export class App extends Component {
           <Button onChangePage={this.onChangePage} />
         )}
         {this.state.largeImage.url && (
-          <Modal open={true} onClose={this.onHandleClose}>
-            <Overlay onClick={this.onHandleClose}>
-              <ModalBox>
-                <ModalImg
-                  src={this.state.largeImage.url}
-                  alt={this.state.largeImage.tags}
-                />
-              </ModalBox>
-            </Overlay>
-          </Modal>
+          <ModalWindow
+            onHandleClose={this.onHandleClose}
+            url={this.state.largeImage.url}
+            tags={this.state.largeImage.tags}
+          />
         )}
       </Container>
     );
