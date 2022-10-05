@@ -4,10 +4,7 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
 import { Button } from './Button/Button';
-
-
 import { ModalWindow } from './Modal/Modal';
-
 
 export class App extends Component {
   state = {
@@ -59,7 +56,6 @@ export class App extends Component {
   }
   onSubmit = query => {
     this.setState({ query });
-
     this.setState({ page: 1 });
   };
   onImageClick = (url, tags) => {
