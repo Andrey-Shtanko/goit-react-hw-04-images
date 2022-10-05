@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { LoadMoreBtn } from './Button.styled';
 import { LoaderBox } from '../Loader/Loader.styled';
 export const Button = ({ onChangePage }) => {
@@ -8,4 +9,8 @@ export const Button = ({ onChangePage }) => {
       </LoadMoreBtn>
     </LoaderBox>
   );
+};
+
+Button.propTypes = {
+  onChangePage: PropTypes.func.isRequired,
 };

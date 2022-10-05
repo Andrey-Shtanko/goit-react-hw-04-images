@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Modal } from '@mui/material';
 import { Overlay, ModalImg, ModalBox } from './Modal.styled';
 
@@ -11,4 +12,10 @@ export const ModalWindow = ({ onHandleClose, url, tags }) => {
       </Overlay>
     </Modal>
   );
+};
+
+ModalWindow.propTypes = {
+  onHandleClose: PropTypes.func.isRequired,
+  url: PropTypes.string.isRequired,
+  tags: PropTypes.string.isRequired,
 };
