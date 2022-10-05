@@ -5,9 +5,9 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
 import { Button } from './Button/Button';
 
-// import { Modal } from '@mui/material';
+
 import { ModalWindow } from './Modal/Modal';
-import { ModalBox, Overlay, ModalImg } from './Modal/Modal.styled';
+
 
 export class App extends Component {
   state = {
