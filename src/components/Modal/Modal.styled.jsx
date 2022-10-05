@@ -18,6 +18,6 @@ export const ModalBox = styled.div`
 `;
 export const ModalImg = styled.img`
   display: block;
-  max-width: 100%;
-  height: auto;
+  max-width: 90vw;
+  max-height: 90vh;
 `;
