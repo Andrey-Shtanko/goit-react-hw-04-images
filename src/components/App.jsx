@@ -1,10 +1,54 @@
-import { Component } from 'react';
+import { useState, useEffect, Component } from 'react';
 import { Container } from './App.styled';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
 import { Button } from './Button/Button';
 import { ModalWindow } from './Modal/Modal';
+import { response } from './../services/imageApi';
+
+// export const App = () => {
+//   const [query, setQuery] = useState('');
+//   const [page, setPage] = useState(1);
+//   const [images, setImages] = useState([]);
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [largeImageUrl, setLargeImageUrl] = useState(null);
+//   const [largeImageTags, setLargeImageTags] = useState(null);
+
+//   const onSubmit = query => {
+//     setQuery(query);
+//     setPage(1);
+//   };
+//   const onImageClick = (url, tags) => {
+//     setLargeImageUrl(url);
+//     setLargeImageTags(tags);
+//   };
+//   const onHandleClose = () => {
+//     setLargeImageUrl(null);
+//     setLargeImageTags(null);
+//   };
+//   const onChangePage = () => {
+//     setPage(prevState => prevState + 1);
+//   };
+
+//   return (
+//     <Container>
+//       <Searchbar onSubmit={onSubmit} />
+//       {isLoading && <Loader />}
+//       {images.length > 1 && (
+//         <ImageGallery images={images} onImageClick={onImageClick} />
+//       )}
+//       {images.length > 1 && <Button onChangePage={onChangePage} />}
+//       {largeImageUrl && (
+//         <ModalWindow
+//           onHandleClose={onHandleClose}
+//           url={largeImageUrl}
+//           tags={largeImageTags}
+//         />
+//       )}
+//     </Container>
+//   );
+// };
 
 export class App extends Component {
   state = {
@@ -18,40 +62,31 @@ export class App extends Component {
     },
   };
 
-  async componentDidUpdate(prevProps, prevState) {
+  onFetch = async () => {
+    try {
+      this.setState({ isLoading: true });
+      const { hits } = await response(this.state.query, this.state.page);
+      this.setState(prevState => ({
+        images: [...prevState.images, ...hits],
+      }));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      this.setState({ isLoading: false });
+    }
+  };
+  componentDidUpdate(prevProps, prevState) {
     if (prevState.query !== this.state.query) {
       this.setState({ images: [] });
-      try {
-        this.setState({ isLoading: true });
-        const { hits } = await fetch(
-          `https://pixabay.com/api/?key=29357448-0203ad34ff6f16514b0291a92&q=${this.state.query}&image_type=photo&orientation=horizontal&safesearch=true&per_page=12&page=1`
-        ).then(response => response.json());
+      this.onFetch();
 
-        this.setState({ images: hits });
-      } catch (error) {
-        console.log(error);
-      } finally {
-        this.setState({ isLoading: false });
-      }
       return;
     }
     if (
       prevState.query === this.state.query &&
       prevState.page !== this.state.page
     ) {
-      try {
-        this.setState({ isLoading: true });
-        const { hits } = await fetch(
-          `https://pixabay.com/api/?key=29357448-0203ad34ff6f16514b0291a92&q=${this.state.query}&image_type=photo&orientation=horizontal&safesearch=true&per_page=12&page=${this.state.page}`
-        ).then(response => response.json());
-        this.setState(prevState => ({
-          images: [...prevState.images, ...hits],
-        }));
-      } catch (error) {
-        console.log(error);
-      } finally {
-        this.setState({ isLoading: false });
-      }
+      this.onFetch();
     }
   }
   onSubmit = query => {
