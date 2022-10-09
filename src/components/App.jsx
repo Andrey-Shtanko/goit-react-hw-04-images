@@ -26,6 +26,7 @@ export const App = () => {
         setImages(prevState => [...prevState, ...hits]);
       } catch (error) {
         console.log(error);
+        return alert(`Sorry, please try again`);
       } finally {
         setIsLoading(false);
       }
